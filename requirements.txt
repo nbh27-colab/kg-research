@@ -1,0 +1,9 @@
+python-dotenv
+pydantic
+openai
+requests
+bs4
+networkx
+pyvis
+fastapi
+uvicorn

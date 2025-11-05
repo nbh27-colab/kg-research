@@ -1,0 +1,564 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script>function neighbourhoodHighlight(params) {
+  // console.log("in nieghbourhoodhighlight");
+  allNodes = nodes.get({ returnType: "Object" });
+  // originalNodes = JSON.parse(JSON.stringify(allNodes));
+  // if something is selected:
+  if (params.nodes.length > 0) {
+    highlightActive = true;
+    var i, j;
+    var selectedNode = params.nodes[0];
+    var degrees = 2;
+
+    // mark all nodes as hard to read.
+    for (let nodeId in allNodes) {
+      // nodeColors[nodeId] = allNodes[nodeId].color;
+      allNodes[nodeId].color = "rgba(200,200,200,0.5)";
+      if (allNodes[nodeId].hiddenLabel === undefined) {
+        allNodes[nodeId].hiddenLabel = allNodes[nodeId].label;
+        allNodes[nodeId].label = undefined;
+      }
+    }
+    var connectedNodes = network.getConnectedNodes(selectedNode);
+    var allConnectedNodes = [];
+
+    // get the second degree nodes
+    for (i = 1; i < degrees; i++) {
+      for (j = 0; j < connectedNodes.length; j++) {
+        allConnectedNodes = allConnectedNodes.concat(
+          network.getConnectedNodes(connectedNodes[j])
+        );
+      }
+    }
+
+    // all second degree nodes get a different color and their label back
+    for (i = 0; i < allConnectedNodes.length; i++) {
+      // allNodes[allConnectedNodes[i]].color = "pink";
+      allNodes[allConnectedNodes[i]].color = "rgba(150,150,150,0.75)";
+      if (allNodes[allConnectedNodes[i]].hiddenLabel !== undefined) {
+        allNodes[allConnectedNodes[i]].label =
+          allNodes[allConnectedNodes[i]].hiddenLabel;
+        allNodes[allConnectedNodes[i]].hiddenLabel = undefined;
+      }
+    }
+
+    // all first degree nodes get their own color and their label back
+    for (i = 0; i < connectedNodes.length; i++) {
+      // allNodes[connectedNodes[i]].color = undefined;
+      allNodes[connectedNodes[i]].color = nodeColors[connectedNodes[i]];
+      if (allNodes[connectedNodes[i]].hiddenLabel !== undefined) {
+        allNodes[connectedNodes[i]].label =
+          allNodes[connectedNodes[i]].hiddenLabel;
+        allNodes[connectedNodes[i]].hiddenLabel = undefined;
+      }
+    }
+
+    // the main node gets its own color and its label back.
+    // allNodes[selectedNode].color = undefined;
+    allNodes[selectedNode].color = nodeColors[selectedNode];
+    if (allNodes[selectedNode].hiddenLabel !== undefined) {
+      allNodes[selectedNode].label = allNodes[selectedNode].hiddenLabel;
+      allNodes[selectedNode].hiddenLabel = undefined;
+    }
+  } else if (highlightActive === true) {
+    // console.log("highlightActive was true");
+    // reset all nodes
+    for (let nodeId in allNodes) {
+      // allNodes[nodeId].color = "purple";
+      allNodes[nodeId].color = nodeColors[nodeId];
+      // delete allNodes[nodeId].color;
+      if (allNodes[nodeId].hiddenLabel !== undefined) {
+        allNodes[nodeId].label = allNodes[nodeId].hiddenLabel;
+        allNodes[nodeId].hiddenLabel = undefined;
+      }
+    }
+    highlightActive = false;
+  }
+
+  // transform the object into an array
+  var updateArray = [];
+  if (params.nodes.length > 0) {
+    for (let nodeId in allNodes) {
+      if (allNodes.hasOwnProperty(nodeId)) {
+        // console.log(allNodes[nodeId]);
+        updateArray.push(allNodes[nodeId]);
+      }
+    }
+    nodes.update(updateArray);
+  } else {
+    // console.log("Nothing was selected");
+    for (let nodeId in allNodes) {
+      if (allNodes.hasOwnProperty(nodeId)) {
+        // console.log(allNodes[nodeId]);
+        // allNodes[nodeId].color = {};
+        updateArray.push(allNodes[nodeId]);
+      }
+    }
+    nodes.update(updateArray);
+  }
+}
+
+function filterHighlight(params) {
+  allNodes = nodes.get({ returnType: "Object" });
+  // if something is selected:
+  if (params.nodes.length > 0) {
+    filterActive = true;
+    let selectedNodes = params.nodes;
+
+    // hiding all nodes and saving the label
+    for (let nodeId in allNodes) {
+      allNodes[nodeId].hidden = true;
+      if (allNodes[nodeId].savedLabel === undefined) {
+        allNodes[nodeId].savedLabel = allNodes[nodeId].label;
+        allNodes[nodeId].label = undefined;
+      }
+    }
+
+    for (let i=0; i < selectedNodes.length; i++) {
+      allNodes[selectedNodes[i]].hidden = false;
+      if (allNodes[selectedNodes[i]].savedLabel !== undefined) {
+        allNodes[selectedNodes[i]].label = allNodes[selectedNodes[i]].savedLabel;
+        allNodes[selectedNodes[i]].savedLabel = undefined;
+      }
+    }
+
+  } else if (filterActive === true) {
+    // reset all nodes
+    for (let nodeId in allNodes) {
+      allNodes[nodeId].hidden = false;
+      if (allNodes[nodeId].savedLabel !== undefined) {
+        allNodes[nodeId].label = allNodes[nodeId].savedLabel;
+        allNodes[nodeId].savedLabel = undefined;
+      }
+    }
+    filterActive = false;
+  }
+
+  // transform the object into an array
+  var updateArray = [];
+  if (params.nodes.length > 0) {
+    for (let nodeId in allNodes) {
+      if (allNodes.hasOwnProperty(nodeId)) {
+        updateArray.push(allNodes[nodeId]);
+      }
+    }
+    nodes.update(updateArray);
+  } else {
+    for (let nodeId in allNodes) {
+      if (allNodes.hasOwnProperty(nodeId)) {
+        updateArray.push(allNodes[nodeId]);
+      }
+    }
+    nodes.update(updateArray);
+  }
+}
+
+function selectNode(nodes) {
+  network.selectNodes(nodes);
+  neighbourhoodHighlight({ nodes: nodes });
+  return nodes;
+}
+
+function selectNodes(nodes) {
+  network.selectNodes(nodes);
+  filterHighlight({nodes: nodes});
+  return nodes;
+}
+
+function highlightFilter(filter) {
+  let selectedNodes = []
+  let selectedProp = filter['property']
+  if (filter['item'] === 'node') {
+    let allNodes = nodes.get({ returnType: "Object" });
+    for (let nodeId in allNodes) {
+      if (allNodes[nodeId][selectedProp] && filter['value'].includes((allNodes[nodeId][selectedProp]).toString())) {
+        selectedNodes.push(nodeId)
+      }
+    }
+  }
+  else if (filter['item'] === 'edge'){
+    let allEdges = edges.get({returnType: 'object'});
+    // check if the selected property exists for selected edge and select the nodes connected to the edge
+    for (let edge in allEdges) {
+      if (allEdges[edge][selectedProp] && filter['value'].includes((allEdges[edge][selectedProp]).toString())) {
+        selectedNodes.push(allEdges[edge]['from'])
+        selectedNodes.push(allEdges[edge]['to'])
+      }
+    }
+  }
+  selectNodes(selectedNodes)
+}</script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+            
+            
+            
+            
+            
+                <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tom-select/2.0.0-rc.4/css/tom-select.min.css" integrity="sha512-43fHB3GLgZfz8QXl1RPQ8O66oIgv3po9cJ5erMt1c4QISq9dYb195T3vr5ImnJPXuVroKcGBPXBFKETW8jrPNQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/tom-select/2.0.0-rc.4/js/tom-select.complete.js" integrity="sha512-jeF9CfnvzDiw9G9xiksVjxR2lib44Gnovvkv+3CgCG6NXCD4gqlA5nDAVW5WjpA+i+/zKsUWV5xNEbW1X/HH0Q==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 750px;
+                 background-color: #47414167;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div id="kg-legend" style="position: absolute; top: 10px; left: 10px; background: rgba(50, 50, 50, 0.9); padding: 15px; border-radius: 8px; color: white; font-family: Arial, sans-serif; font-size: 14px; box-shadow: 0 4px 8px rgba(0,0,0,0.3); z-index: 1000; cursor: grab; max-width: 250px;">
+            <h4 style="margin-top: 0; margin-bottom: 12px; color: #87CEEB;">Node Types</h4>
+            
+                <div style="display: flex; align-items: center; margin-bottom: 8px;">
+                    <span style="display: inline-block; width: 20px; height: 20px; border-radius: 50%; background-color: #98FB98; margin-right: 10px; border: 1px solid #777;"></span>
+                    <span>City (1)</span>
+                </div>
+            
+                <div style="display: flex; align-items: center; margin-bottom: 8px;">
+                    <span style="display: inline-block; width: 20px; height: 20px; border-radius: 50%; background-color: #F0E68C; margin-right: 10px; border: 1px solid #777;"></span>
+                    <span>Location (21)</span>
+                </div>
+            
+                <div style="display: flex; align-items: center; margin-bottom: 8px;">
+                    <span style="display: inline-block; width: 20px; height: 20px; border-radius: 50%; background-color: #DDA0DD; margin-right: 10px; border: 1px solid #777;"></span>
+                    <span>Mountain (7)</span>
+                </div>
+            
+                <div style="display: flex; align-items: center; margin-bottom: 8px;">
+                    <span style="display: inline-block; width: 20px; height: 20px; border-radius: 50%; background-color: #87CEEB; margin-right: 10px; border: 1px solid #777;"></span>
+                    <span>Organization (14)</span>
+                </div>
+            
+                <div style="display: flex; align-items: center; margin-bottom: 8px;">
+                    <span style="display: inline-block; width: 20px; height: 20px; border-radius: 50%; background-color: #90EE90; margin-right: 10px; border: 1px solid #777;"></span>
+                    <span>Person (19)</span>
+                </div>
+            
+                <div style="display: flex; align-items: center; margin-bottom: 8px;">
+                    <span style="display: inline-block; width: 20px; height: 20px; border-radius: 50%; background-color: #FFB6C1; margin-right: 10px; border: 1px solid #777;"></span>
+                    <span>Plateau (2)</span>
+                </div>
+            
+                <div style="display: flex; align-items: center; margin-bottom: 8px;">
+                    <span style="display: inline-block; width: 20px; height: 20px; border-radius: 50%; background-color: #FFD700; margin-right: 10px; border: 1px solid #777;"></span>
+                    <span>Province (1)</span>
+                </div>
+            
+            <div style="margin-top: 10px; padding-top: 10px; border-top: 1px solid #666; font-size: 12px; color: #aaa;">
+                <div>Total: 65 nodes, 37 edges</div>
+            </div>
+        </div>
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                var legend = document.getElementById('kg-legend');
+                var isDragging = false;
+                var currentX, currentY, initialX, initialY;
+                var xOffset = 0, yOffset = 0;
+
+                legend.addEventListener('mousedown', dragStart);
+                legend.addEventListener('mouseup', dragEnd);
+                document.addEventListener('mousemove', drag);
+
+                function dragStart(e) {
+                    initialX = e.clientX - xOffset;
+                    initialY = e.clientY - yOffset;
+                    isDragging = true;
+                    legend.style.cursor = 'grabbing';
+                }
+
+                function dragEnd(e) {
+                    initialX = currentX;
+                    initialY = currentY;
+                    isDragging = false;
+                    legend.style.cursor = 'grab';
+                }
+
+                function drag(e) {
+                    if (isDragging) {
+                        e.preventDefault();
+                        currentX = e.clientX - initialX;
+                        currentY = e.clientY - initialY;
+                        xOffset = currentX;
+                        yOffset = currentY;
+                        legend.style.transform = "translate3d(" + currentX + "px, " + currentY + "px, 0)";
+                    }
+                }
+            });
+        </script>
+        
+        <div class="card" style="width: 100%">
+            
+                <div id="select-menu" class="card-header">
+                    <div class="row no-gutters">
+                        <div class="col-10 pb-2">
+                            <select
+                            class="form-select"
+                            aria-label="Default select example"
+                            onchange="selectNode([value]);"
+                            id="select-node"
+                            placeholder="Select node..."
+                            >
+                                <option selected>Select a Node by ID</option>
+                                
+                                    <option value="entity_1">entity_1</option>
+                                
+                                    <option value="entity_2">entity_2</option>
+                                
+                                    <option value="entity_3">entity_3</option>
+                                
+                                    <option value="entity_4">entity_4</option>
+                                
+                                    <option value="entity_45">entity_45</option>
+                                
+                                    <option value="entity_46">entity_46</option>
+                                
+                                    <option value="entity_47">entity_47</option>
+                                
+                                    <option value="entity_48">entity_48</option>
+                                
+                                    <option value="entity_49">entity_49</option>
+                                
+                                    <option value="entity_50">entity_50</option>
+                                
+                                    <option value="entity_51">entity_51</option>
+                                
+                                    <option value="entity_52">entity_52</option>
+                                
+                                    <option value="entity_53">entity_53</option>
+                                
+                                    <option value="entity_54">entity_54</option>
+                                
+                                    <option value="entity_55">entity_55</option>
+                                
+                                    <option value="entity_56">entity_56</option>
+                                
+                                    <option value="entity_57">entity_57</option>
+                                
+                                    <option value="entity_58">entity_58</option>
+                                
+                                    <option value="entity_59">entity_59</option>
+                                
+                                    <option value="entity_60">entity_60</option>
+                                
+                                    <option value="entity_61">entity_61</option>
+                                
+                                    <option value="entity_62">entity_62</option>
+                                
+                                    <option value="entity_63">entity_63</option>
+                                
+                                    <option value="entity_64">entity_64</option>
+                                
+                                    <option value="entity_65">entity_65</option>
+                                
+                                    <option value="entity_15">entity_15</option>
+                                
+                                    <option value="entity_17">entity_17</option>
+                                
+                                    <option value="entity_21">entity_21</option>
+                                
+                                    <option value="entity_24">entity_24</option>
+                                
+                                    <option value="entity_26">entity_26</option>
+                                
+                                    <option value="entity_25">entity_25</option>
+                                
+                                    <option value="entity_41">entity_41</option>
+                                
+                                    <option value="entity_42">entity_42</option>
+                                
+                                    <option value="entity_43">entity_43</option>
+                                
+                                    <option value="entity_44">entity_44</option>
+                                
+                                    <option value="entity_40">entity_40</option>
+                                
+                                    <option value="entity_5">entity_5</option>
+                                
+                                    <option value="entity_6">entity_6</option>
+                                
+                                    <option value="entity_7">entity_7</option>
+                                
+                                    <option value="entity_8">entity_8</option>
+                                
+                                    <option value="entity_9">entity_9</option>
+                                
+                                    <option value="entity_10">entity_10</option>
+                                
+                                    <option value="entity_11">entity_11</option>
+                                
+                                    <option value="entity_12">entity_12</option>
+                                
+                                    <option value="entity_13">entity_13</option>
+                                
+                                    <option value="entity_14">entity_14</option>
+                                
+                                    <option value="entity_16">entity_16</option>
+                                
+                                    <option value="entity_18">entity_18</option>
+                                
+                                    <option value="entity_19">entity_19</option>
+                                
+                                    <option value="entity_20">entity_20</option>
+                                
+                                    <option value="entity_22">entity_22</option>
+                                
+                                    <option value="entity_23">entity_23</option>
+                                
+                                    <option value="entity_27">entity_27</option>
+                                
+                                    <option value="entity_28">entity_28</option>
+                                
+                                    <option value="entity_29">entity_29</option>
+                                
+                                    <option value="entity_30">entity_30</option>
+                                
+                                    <option value="entity_31">entity_31</option>
+                                
+                                    <option value="entity_32">entity_32</option>
+                                
+                                    <option value="entity_33">entity_33</option>
+                                
+                                    <option value="entity_34">entity_34</option>
+                                
+                                    <option value="entity_35">entity_35</option>
+                                
+                                    <option value="entity_36">entity_36</option>
+                                
+                                    <option value="entity_37">entity_37</option>
+                                
+                                    <option value="entity_38">entity_38</option>
+                                
+                                    <option value="entity_39">entity_39</option>
+                                
+                            </select>
+                        </div>
+                        <div class="col-2 pb-2">
+                            <button type="button" class="btn btn-primary btn-block" onclick="neighbourhoodHighlight({nodes: []});">Reset Selection</button>
+                        </div>
+                    </div>
+                </div>
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+                  new TomSelect("#select-node",{
+                      create: false,
+                      sortField: {
+                          field: "text",
+                          direction: "asc"
+                      }
+                  });
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"font": {"color": "white"}, "group": "City", "id": "entity_1", "label": "\u0110\u00e0 L\u1ea1t", "shape": "dot", "size": 45, "title": "Type: City\nID: entity_1\n---\nname: \u0110\u00e0 L\u1ea1t\nprovince: L\u00e2m \u0110\u1ed3ng\naltitude: 1500 m\narea: 393.29 km\u00b2"}, {"font": {"color": "white"}, "group": "Province", "id": "entity_2", "label": "L\u00e2m \u0110\u1ed3ng", "shape": "dot", "size": 21, "title": "Type: Province\nID: entity_2\n---\nname: L\u00e2m \u0110\u1ed3ng"}, {"font": {"color": "white"}, "group": "Plateau", "id": "entity_3", "label": "Cao nguy\u00ean L\u00e2m Vi\u00ean", "shape": "dot", "size": 21, "title": "Type: Plateau\nID: entity_3\n---\nname: Cao nguy\u00ean L\u00e2m Vi\u00ean"}, {"font": {"color": "white"}, "group": "Plateau", "id": "entity_4", "label": "Cao nguy\u00ean Lang Biang", "shape": "dot", "size": 24, "title": "Type: Plateau\nID: entity_4\n---\nname: Cao nguy\u00ean Lang Biang"}, {"font": {"color": "white"}, "group": "Location", "id": "entity_45", "label": "H\u1ed3 Xu\u00e2n H\u01b0\u01a1ng", "shape": "dot", "size": 18, "title": "Type: Location\nID: entity_45\n---\nname: H\u1ed3 Xu\u00e2n H\u01b0\u01a1ng"}, {"font": {"color": "white"}, "group": "Location", "id": "entity_46", "label": "\u0110\u1ed3i C\u00f9", "shape": "dot", "size": 18, "title": "Type: Location\nID: entity_46\n---\nname: \u0110\u1ed3i C\u00f9"}, {"font": {"color": "white"}, "group": "Location", "id": "entity_47", "label": "H\u1ed3 Su\u1ed1i V\u00e0ng", "shape": "dot", "size": 18, "title": "Type: Location\nID: entity_47\n---\nname: H\u1ed3 Su\u1ed1i V\u00e0ng"}, {"font": {"color": "white"}, "group": "Location", "id": "entity_48", "label": "C\u00f4ng vi\u00ean hoa \u0110\u00e0 L\u1ea1t", "shape": "dot", "size": 18, "title": "Type: Location\nID: entity_48\n---\nname: C\u00f4ng vi\u00ean hoa \u0110\u00e0 L\u1ea1t"}, {"font": {"color": "white"}, "group": "Location", "id": "entity_49", "label": "Nh\u00e0 th\u1edd ch\u00e1nh t\u00f2a \u0110\u00e0 L\u1ea1t", "shape": "dot", "size": 18, "title": "Type: Location\nID: entity_49\n---\nname: Nh\u00e0 th\u1edd ch\u00e1nh t\u00f2a \u0110\u00e0 L\u1ea1t"}, {"font": {"color": "white"}, "group": "Location", "id": "entity_50", "label": "Nh\u00e0 th\u1edd Domaine de Marie", "shape": "dot", "size": 18, "title": "Type: Location\nID: entity_50\n---\nname: Nh\u00e0 th\u1edd Domaine de Marie"}, {"font": {"color": "white"}, "group": "Location", "id": "entity_51", "label": "Nh\u00e0 th\u1edd Du Sinh", "shape": "dot", "size": 18, "title": "Type: Location\nID: entity_51\n---\nname: Nh\u00e0 th\u1edd Du Sinh"}, {"font": {"color": "white"}, "group": "Location", "id": "entity_52", "label": "Nh\u00e0 th\u1edd Cam Ly", "shape": "dot", "size": 18, "title": "Type: Location\nID: entity_52\n---\nname: Nh\u00e0 th\u1edd Cam Ly"}, {"font": {"color": "white"}, "group": "Location", "id": "entity_53", "label": "Dinh I", "shape": "dot", "size": 21, "title": "Type: Location\nID: entity_53\n---\nname: Dinh I"}, {"font": {"color": "white"}, "group": "Location", "id": "entity_54", "label": "Dinh II", "shape": "dot", "size": 18, "title": "Type: Location\nID: entity_54\n---\nname: Dinh II"}, {"font": {"color": "white"}, "group": "Location", "id": "entity_55", "label": "Dinh III", "shape": "dot", "size": 21, "title": "Type: Location\nID: entity_55\n---\nname: Dinh III"}, {"font": {"color": "white"}, "group": "Location", "id": "entity_56", "label": "Bi\u1ec7t th\u1ef1 Long M\u1ef9 Qu\u1eadn C\u00f4ng", "shape": "dot", "size": 18, "title": "Type: Location\nID: entity_56\n---\nname: Bi\u1ec7t th\u1ef1 Long M\u1ef9 Qu\u1eadn C\u00f4ng"}, {"font": {"color": "white"}, "group": "Location", "id": "entity_57", "label": "Bi\u1ec7t th\u1ef1 Th\u1ed1ng \u0111\u1ed1c Nam k\u1ef3", "shape": "dot", "size": 18, "title": "Type: Location\nID: entity_57\n---\nname: Bi\u1ec7t th\u1ef1 Th\u1ed1ng \u0111\u1ed1c Nam k\u1ef3"}, {"font": {"color": "white"}, "group": "Location", "id": "entity_58", "label": "Bi\u1ec7t th\u1ef1 H\u1eb1ng Nga", "shape": "dot", "size": 18, "title": "Type: Location\nID: entity_58\n---\nname: Bi\u1ec7t th\u1ef1 H\u1eb1ng Nga"}, {"font": {"color": "white"}, "group": "Location", "id": "entity_59", "label": "Ga \u0110\u00e0 L\u1ea1t", "shape": "dot", "size": 24, "title": "Type: Location\nID: entity_59\n---\nname: Ga \u0110\u00e0 L\u1ea1t"}, {"font": {"color": "white"}, "group": "Location", "id": "entity_60", "label": "Thi\u1ec1n vi\u1ec7n Tr\u00fac L\u00e2m", "shape": "dot", "size": 18, "title": "Type: Location\nID: entity_60\n---\nname: Thi\u1ec1n vi\u1ec7n Tr\u00fac L\u00e2m"}, {"font": {"color": "white"}, "group": "Location", "id": "entity_61", "label": "Ch\u00f9a Linh S\u01a1n", "shape": "dot", "size": 18, "title": "Type: Location\nID: entity_61\n---\nname: Ch\u00f9a Linh S\u01a1n"}, {"font": {"color": "white"}, "group": "Location", "id": "entity_62", "label": "Ch\u00f9a Thi\u00ean V\u01b0\u01a1ng C\u1ed5 S\u00e1t", "shape": "dot", "size": 18, "title": "Type: Location\nID: entity_62\n---\nname: Ch\u00f9a Thi\u00ean V\u01b0\u01a1ng C\u1ed5 S\u00e1t"}, {"font": {"color": "white"}, "group": "Location", "id": "entity_63", "label": "Ch\u00f9a Linh Ph\u01b0\u1edbc", "shape": "dot", "size": 18, "title": "Type: Location\nID: entity_63\n---\nname: Ch\u00f9a Linh Ph\u01b0\u1edbc"}, {"font": {"color": "white"}, "group": "Location", "id": "entity_64", "label": "Ch\u00f9a Linh \u1ea8n", "shape": "dot", "size": 18, "title": "Type: Location\nID: entity_64\n---\nname: Ch\u00f9a Linh \u1ea8n"}, {"font": {"color": "white"}, "group": "Location", "id": "entity_65", "label": "H\u1ed3 Tuy\u1ec1n L\u00e2m", "shape": "dot", "size": 18, "title": "Type: Location\nID: entity_65\n---\nname: H\u1ed3 Tuy\u1ec1n L\u00e2m"}, {"font": {"color": "white"}, "group": "Person", "id": "entity_15", "label": "Alexandre Yersin", "shape": "dot", "size": 21, "title": "Type: Person\nID: entity_15\n---\nname: Alexandre Yersin"}, {"font": {"color": "white"}, "group": "Person", "id": "entity_17", "label": "Paul Doumer", "shape": "dot", "size": 18, "title": "Type: Person\nID: entity_17\n---\nname: Paul Doumer"}, {"font": {"color": "white"}, "group": "Person", "id": "entity_21", "label": "B\u1ea3o \u0110\u1ea1i", "shape": "dot", "size": 21, "title": "Type: Person\nID: entity_21\n---\nname: B\u1ea3o \u0110\u1ea1i"}, {"font": {"color": "white"}, "group": "Person", "id": "entity_24", "label": "Nam Ph\u01b0\u01a1ng", "shape": "dot", "size": 21, "title": "Type: Person\nID: entity_24\n---\nname: Nam Ph\u01b0\u01a1ng"}, {"font": {"color": "white"}, "group": "Person", "id": "entity_26", "label": "Nguy\u1ec5n H\u1eefu Th\u1ecb Lan", "shape": "dot", "size": 21, "title": "Type: Person\nID: entity_26\n---\nname: Nguy\u1ec5n H\u1eefu Th\u1ecb Lan"}, {"font": {"color": "white"}, "group": "Person", "id": "entity_25", "label": "Nguy\u1ec5n H\u1eefu H\u00e0o", "shape": "dot", "size": 18, "title": "Type: Person\nID: entity_25\n---\nname: Nguy\u1ec5n H\u1eefu H\u00e0o"}, {"font": {"color": "white"}, "group": "Organization", "id": "entity_41", "label": "C\u00f4ng ty K\u0027Gim", "shape": "dot", "size": 18, "title": "Type: Organization\nID: entity_41\n---\nname: C\u00f4ng ty K\u0026#x27;Gim"}, {"font": {"color": "white"}, "group": "Organization", "id": "entity_42", "label": "C\u00f4ng ty SIDEC", "shape": "dot", "size": 18, "title": "Type: Organization\nID: entity_42\n---\nname: C\u00f4ng ty SIDEC"}, {"font": {"color": "white"}, "group": "Organization", "id": "entity_43", "label": "B\u1ea3o t\u00e0ng Xe l\u1eeda Th\u1ee5y S\u0129", "shape": "dot", "size": 18, "title": "Type: Organization\nID: entity_43\n---\nname: B\u1ea3o t\u00e0ng Xe l\u1eeda Th\u1ee5y S\u0129"}, {"font": {"color": "white"}, "group": "Organization", "id": "entity_44", "label": "H\u1ed9i Ki\u1ebfn tr\u00fac s\u01b0 th\u1ebf gi\u1edbi (UIA)", "shape": "dot", "size": 18, "title": "Type: Organization\nID: entity_44\n---\nname: H\u1ed9i Ki\u1ebfn tr\u00fac s\u01b0 th\u1ebf gi\u1edbi (UIA)"}, {"font": {"color": "white"}, "group": "Organization", "id": "entity_40", "label": "Tr\u01b0\u1eddng Cao \u0111\u1eb3ng S\u01b0 ph\u1ea1m", "shape": "dot", "size": 18, "title": "Type: Organization\nID: entity_40\n---\nname: Tr\u01b0\u1eddng Cao \u0111\u1eb3ng S\u01b0 ph\u1ea1m"}, {"font": {"color": "white"}, "group": "Mountain", "id": "entity_5", "label": "Ch\u01b0 Yang Kae", "shape": "dot", "size": 15, "title": "Type: Mountain\nID: entity_5\n---\nname: Ch\u01b0 Yang Kae\nheight: 1921 m"}, {"font": {"color": "white"}, "group": "Mountain", "id": "entity_6", "label": "Bi Doup", "shape": "dot", "size": 15, "title": "Type: Mountain\nID: entity_6\n---\nname: Bi Doup\nheight: 2278 m"}, {"font": {"color": "white"}, "group": "Mountain", "id": "entity_7", "label": "Cho Proline", "shape": "dot", "size": 15, "title": "Type: Mountain\nID: entity_7\n---\nname: Cho Proline\nheight: 1629 m"}, {"font": {"color": "white"}, "group": "Mountain", "id": "entity_8", "label": "Voi", "shape": "dot", "size": 15, "title": "Type: Mountain\nID: entity_8\n---\nname: Voi\nheight: 1754 m"}, {"font": {"color": "white"}, "group": "Mountain", "id": "entity_9", "label": "Y\u00e0ng S\u01a1reng", "shape": "dot", "size": 15, "title": "Type: Mountain\nID: entity_9\n---\nname: Y\u00e0ng S\u01a1reng"}, {"font": {"color": "white"}, "group": "Mountain", "id": "entity_10", "label": "Ch\u01b0 Yang Sinh", "shape": "dot", "size": 15, "title": "Type: Mountain\nID: entity_10\n---\nname: Ch\u01b0 Yang Sinh\nheight: 1408 m"}, {"font": {"color": "white"}, "group": "Mountain", "id": "entity_11", "label": "Gi\u00f3 H\u00fa", "shape": "dot", "size": 15, "title": "Type: Mountain\nID: entity_11\n---\nname: Gi\u00f3 H\u00fa\nheight: 1644 m"}, {"font": {"color": "white"}, "group": "Person", "id": "entity_12", "label": "Nguy\u1ec5n Th\u00f4ng", "shape": "dot", "size": 15, "title": "Type: Person\nID: entity_12\n---\nname: Nguy\u1ec5n Th\u00f4ng"}, {"font": {"color": "white"}, "group": "Person", "id": "entity_13", "label": "Paul N\u00e9is", "shape": "dot", "size": 15, "title": "Type: Person\nID: entity_13\n---\nname: Paul N\u00e9is"}, {"font": {"color": "white"}, "group": "Person", "id": "entity_14", "label": "Albert Septans", "shape": "dot", "size": 15, "title": "Type: Person\nID: entity_14\n---\nname: Albert Septans"}, {"font": {"color": "white"}, "group": "Person", "id": "entity_16", "label": "Jean Marie Antoine de Lanessan", "shape": "dot", "size": 15, "title": "Type: Person\nID: entity_16\n---\nname: Jean Marie Antoine de Lanessan"}, {"font": {"color": "white"}, "group": "Person", "id": "entity_18", "label": "Duy T\u00e2n", "shape": "dot", "size": 15, "title": "Type: Person\nID: entity_18\n---\nname: Duy T\u00e2n"}, {"font": {"color": "white"}, "group": "Person", "id": "entity_19", "label": "J.E. Charles", "shape": "dot", "size": 15, "title": "Type: Person\nID: entity_19\n---\nname: J.E. Charles"}, {"font": {"color": "white"}, "group": "Person", "id": "entity_20", "label": "Kh\u1ea3i \u0110\u1ecbnh", "shape": "dot", "size": 15, "title": "Type: Person\nID: entity_20\n---\nname: Kh\u1ea3i \u0110\u1ecbnh"}, {"font": {"color": "white"}, "group": "Person", "id": "entity_22", "label": "Ng\u00f4 \u0110\u00ecnh Di\u1ec7m", "shape": "dot", "size": 15, "title": "Type: Person\nID: entity_22\n---\nname: Ng\u00f4 \u0110\u00ecnh Di\u1ec7m"}, {"font": {"color": "white"}, "group": "Person", "id": "entity_23", "label": "Nguy\u1ec5n Cao K\u1ef3", "shape": "dot", "size": 15, "title": "Type: Person\nID: entity_23\n---\nname: Nguy\u1ec5n Cao K\u1ef3"}, {"font": {"color": "white"}, "group": "Person", "id": "entity_27", "label": "Moncet", "shape": "dot", "size": 15, "title": "Type: Person\nID: entity_27\n---\nname: Moncet"}, {"font": {"color": "white"}, "group": "Person", "id": "entity_28", "label": "Revenron", "shape": "dot", "size": 15, "title": "Type: Person\nID: entity_28\n---\nname: Revenron"}, {"font": {"color": "white"}, "group": "Person", "id": "entity_29", "label": "Ng\u00f4 Vi\u1ebft Th\u1ee5", "shape": "dot", "size": 15, "title": "Type: Person\nID: entity_29\n---\nname: Ng\u00f4 Vi\u1ebft Th\u1ee5"}, {"font": {"color": "white"}, "group": "Person", "id": "entity_30", "label": "Cunhac", "shape": "dot", "size": 15, "title": "Type: Person\nID: entity_30\n---\nname: Cunhac"}, {"font": {"color": "white"}, "group": "Organization", "id": "entity_31", "label": "Vi\u1ec7n \u0110\u1ea1i h\u1ecdc \u0110\u00e0 L\u1ea1t", "shape": "dot", "size": 15, "title": "Type: Organization\nID: entity_31\n---\nname: Vi\u1ec7n \u0110\u1ea1i h\u1ecdc \u0110\u00e0 L\u1ea1t"}, {"font": {"color": "white"}, "group": "Organization", "id": "entity_32", "label": "Tr\u01b0\u1eddng V\u00f5 b\u1ecb Qu\u1ed1c gia \u0110\u00e0 L\u1ea1t", "shape": "dot", "size": 15, "title": "Type: Organization\nID: entity_32\n---\nname: Tr\u01b0\u1eddng V\u00f5 b\u1ecb Qu\u1ed1c gia \u0110\u00e0 L\u1ea1t"}, {"font": {"color": "white"}, "group": "Organization", "id": "entity_33", "label": "Th\u01b0 vi\u1ec7n \u0110\u00e0 L\u1ea1t", "shape": "dot", "size": 15, "title": "Type: Organization\nID: entity_33\n---\nname: Th\u01b0 vi\u1ec7n \u0110\u00e0 L\u1ea1t"}, {"font": {"color": "white"}, "group": "Organization", "id": "entity_34", "label": "Tr\u01b0\u1eddng \u0110\u1ea1i h\u1ecdc Chi\u1ebfn tranh Ch\u00ednh tr\u1ecb", "shape": "dot", "size": 15, "title": "Type: Organization\nID: entity_34\n---\nname: Tr\u01b0\u1eddng \u0110\u1ea1i h\u1ecdc Chi\u1ebfn tranh Ch\u00ednh tr\u1ecb"}, {"font": {"color": "white"}, "group": "Organization", "id": "entity_35", "label": "Tr\u01b0\u1eddng Ch\u1ec9 huy v\u00e0 Tham m\u01b0u", "shape": "dot", "size": 15, "title": "Type: Organization\nID: entity_35\n---\nname: Tr\u01b0\u1eddng Ch\u1ec9 huy v\u00e0 Tham m\u01b0u"}, {"font": {"color": "white"}, "group": "Organization", "id": "entity_36", "label": "Vi\u1ec7n Nghi\u00ean c\u1ee9u h\u1ea1t nh\u00e2n", "shape": "dot", "size": 15, "title": "Type: Organization\nID: entity_36\n---\nname: Vi\u1ec7n Nghi\u00ean c\u1ee9u h\u1ea1t nh\u00e2n"}, {"font": {"color": "white"}, "group": "Organization", "id": "entity_37", "label": "Ph\u00e2n vi\u1ec7n Sinh h\u1ecdc", "shape": "dot", "size": 15, "title": "Type: Organization\nID: entity_37\n---\nname: Ph\u00e2n vi\u1ec7n Sinh h\u1ecdc"}, {"font": {"color": "white"}, "group": "Organization", "id": "entity_38", "label": "H\u1ecdc vi\u1ec7n L\u1ee5c qu\u00e2n", "shape": "dot", "size": 15, "title": "Type: Organization\nID: entity_38\n---\nname: H\u1ecdc vi\u1ec7n L\u1ee5c qu\u00e2n"}, {"font": {"color": "white"}, "group": "Organization", "id": "entity_39", "label": "Vi\u1ec7n Vacxin (Pasteur)", "shape": "dot", "size": 15, "title": "Type: Organization\nID: entity_39\n---\nname: Vi\u1ec7n Vacxin (Pasteur)"}]);
+                  edges = new vis.DataSet([{"arrows": "to", "color": "lightcoral", "from": "entity_1", "label": "LOCATED_IN", "title": "\u0110\u00e0 L\u1ea1t --LOCATED_IN--\u003e L\u00e2m \u0110\u1ed3ng", "to": "entity_2", "width": 1}, {"arrows": "to", "color": "purple", "from": "entity_1", "label": "ISSUED", "title": "\u0110\u00e0 L\u1ea1t --ISSUED--\u003e Cao nguy\u00ean L\u00e2m Vi\u00ean", "to": "entity_3", "width": 1}, {"arrows": "to", "color": "darkgreen", "from": "entity_1", "label": "LOCATED_ON", "title": "\u0110\u00e0 L\u1ea1t --LOCATED_ON--\u003e Cao nguy\u00ean Lang Biang", "to": "entity_4", "width": 1}, {"arrows": "to", "color": "gold", "from": "entity_1", "label": "HAS", "title": "\u0110\u00e0 L\u1ea1t --HAS--\u003e H\u1ed3 Xu\u00e2n H\u01b0\u01a1ng", "to": "entity_45", "width": 1}, {"arrows": "to", "color": "gold", "from": "entity_1", "label": "HAS", "title": "\u0110\u00e0 L\u1ea1t --HAS--\u003e \u0110\u1ed3i C\u00f9", "to": "entity_46", "width": 1}, {"arrows": "to", "color": "gold", "from": "entity_1", "label": "HAS", "title": "\u0110\u00e0 L\u1ea1t --HAS--\u003e H\u1ed3 Su\u1ed1i V\u00e0ng", "to": "entity_47", "width": 1}, {"arrows": "to", "color": "gold", "from": "entity_1", "label": "HAS", "title": "\u0110\u00e0 L\u1ea1t --HAS--\u003e C\u00f4ng vi\u00ean hoa \u0110\u00e0 L\u1ea1t", "to": "entity_48", "width": 1}, {"arrows": "to", "color": "gold", "from": "entity_1", "label": "HAS", "title": "\u0110\u00e0 L\u1ea1t --HAS--\u003e Nh\u00e0 th\u1edd ch\u00e1nh t\u00f2a \u0110\u00e0 L\u1ea1t", "to": "entity_49", "width": 1}, {"arrows": "to", "color": "gold", "from": "entity_1", "label": "HAS", "title": "\u0110\u00e0 L\u1ea1t --HAS--\u003e Nh\u00e0 th\u1edd Domaine de Marie", "to": "entity_50", "width": 1}, {"arrows": "to", "color": "gold", "from": "entity_1", "label": "HAS", "title": "\u0110\u00e0 L\u1ea1t --HAS--\u003e Nh\u00e0 th\u1edd Du Sinh", "to": "entity_51", "width": 1}, {"arrows": "to", "color": "gold", "from": "entity_1", "label": "HAS", "title": "\u0110\u00e0 L\u1ea1t --HAS--\u003e Nh\u00e0 th\u1edd Cam Ly", "to": "entity_52", "width": 1}, {"arrows": "to", "color": "gold", "from": "entity_1", "label": "HAS", "title": "\u0110\u00e0 L\u1ea1t --HAS--\u003e Dinh I", "to": "entity_53", "width": 1}, {"arrows": "to", "color": "gold", "from": "entity_1", "label": "HAS", "title": "\u0110\u00e0 L\u1ea1t --HAS--\u003e Dinh II", "to": "entity_54", "width": 1}, {"arrows": "to", "color": "gold", "from": "entity_1", "label": "HAS", "title": "\u0110\u00e0 L\u1ea1t --HAS--\u003e Dinh III", "to": "entity_55", "width": 1}, {"arrows": "to", "color": "gold", "from": "entity_1", "label": "HAS", "title": "\u0110\u00e0 L\u1ea1t --HAS--\u003e Bi\u1ec7t th\u1ef1 Long M\u1ef9 Qu\u1eadn C\u00f4ng", "to": "entity_56", "width": 1}, {"arrows": "to", "color": "gold", "from": "entity_1", "label": "HAS", "title": "\u0110\u00e0 L\u1ea1t --HAS--\u003e Bi\u1ec7t th\u1ef1 Th\u1ed1ng \u0111\u1ed1c Nam k\u1ef3", "to": "entity_57", "width": 1}, {"arrows": "to", "color": "gold", "from": "entity_1", "label": "HAS", "title": "\u0110\u00e0 L\u1ea1t --HAS--\u003e Bi\u1ec7t th\u1ef1 H\u1eb1ng Nga", "to": "entity_58", "width": 1}, {"arrows": "to", "color": "gold", "from": "entity_1", "label": "HAS", "title": "\u0110\u00e0 L\u1ea1t --HAS--\u003e Ga \u0110\u00e0 L\u1ea1t", "to": "entity_59", "width": 1}, {"arrows": "to", "color": "gold", "from": "entity_1", "label": "HAS", "title": "\u0110\u00e0 L\u1ea1t --HAS--\u003e Thi\u1ec1n vi\u1ec7n Tr\u00fac L\u00e2m", "to": "entity_60", "width": 1}, {"arrows": "to", "color": "gold", "from": "entity_1", "label": "HAS", "title": "\u0110\u00e0 L\u1ea1t --HAS--\u003e Ch\u00f9a Linh S\u01a1n", "to": "entity_61", "width": 1}, {"arrows": "to", "color": "gold", "from": "entity_1", "label": "HAS", "title": "\u0110\u00e0 L\u1ea1t --HAS--\u003e Ch\u00f9a Thi\u00ean V\u01b0\u01a1ng C\u1ed5 S\u00e1t", "to": "entity_62", "width": 1}, {"arrows": "to", "color": "gold", "from": "entity_1", "label": "HAS", "title": "\u0110\u00e0 L\u1ea1t --HAS--\u003e Ch\u00f9a Linh Ph\u01b0\u1edbc", "to": "entity_63", "width": 1}, {"arrows": "to", "color": "gold", "from": "entity_1", "label": "HAS", "title": "\u0110\u00e0 L\u1ea1t --HAS--\u003e Ch\u00f9a Linh \u1ea8n", "to": "entity_64", "width": 1}, {"arrows": "to", "color": "gold", "from": "entity_1", "label": "HAS", "title": "\u0110\u00e0 L\u1ea1t --HAS--\u003e H\u1ed3 Tuy\u1ec1n L\u00e2m", "to": "entity_65", "width": 1}, {"arrows": "to", "color": "teal", "from": "entity_4", "label": "DEVELOPED_BY", "title": "Cao nguy\u00ean Lang Biang --DEVELOPED_BY--\u003e \u0110\u00e0 L\u1ea1t", "to": "entity_1", "width": 1}, {"arrows": "to", "color": "darkblue", "from": "entity_15", "label": "DISCOVERED", "title": "Alexandre Yersin --DISCOVERED--\u003e Cao nguy\u00ean Lang Biang\n---\ndate: 21 June 1893", "to": "entity_4", "width": 1}, {"arrows": "to", "color": "orange", "from": "entity_17", "label": "CONSULTED", "title": "Paul Doumer --CONSULTED--\u003e Alexandre Yersin\n---\npurpose: Establishing a resort", "to": "entity_15", "width": 1}, {"arrows": "to", "color": "purple", "from": "entity_21", "label": "RESIDED_AT", "title": "B\u1ea3o \u0110\u1ea1i --RESIDED_AT--\u003e Dinh III", "to": "entity_55", "width": 1}, {"arrows": "to", "color": "lightcoral", "from": "entity_21", "label": "MARRIED_TO", "title": "B\u1ea3o \u0110\u1ea1i --MARRIED_TO--\u003e Nam Ph\u01b0\u01a1ng", "to": "entity_24", "width": 1}, {"arrows": "to", "color": "gold", "from": "entity_24", "label": "DAUGHTER_OF", "title": "Nam Ph\u01b0\u01a1ng --DAUGHTER_OF--\u003e Nguy\u1ec5n H\u1eefu Th\u1ecb Lan", "to": "entity_26", "width": 1}, {"arrows": "to", "color": "gold", "from": "entity_26", "label": "DAUGHTER_OF", "title": "Nguy\u1ec5n H\u1eefu Th\u1ecb Lan --DAUGHTER_OF--\u003e Nguy\u1ec5n H\u1eefu H\u00e0o", "to": "entity_25", "width": 1}, {"arrows": "to", "color": "darkgreen", "from": "entity_41", "label": "INVESTED_IN", "title": "C\u00f4ng ty K\u0026#x27;Gim --INVESTED_IN--\u003e Dinh I", "to": "entity_53", "width": 1}, {"arrows": "to", "color": "gray", "from": "entity_42", "label": "BUILT", "title": "C\u00f4ng ty SIDEC --BUILT--\u003e Ga \u0110\u00e0 L\u1ea1t", "to": "entity_59", "width": 1}, {"arrows": "to", "color": "darkblue", "from": "entity_43", "label": "PURCHASED", "title": "B\u1ea3o t\u00e0ng Xe l\u1eeda Th\u1ee5y S\u0129 --PURCHASED--\u003e Ga \u0110\u00e0 L\u1ea1t\n---\nitems: 2 steam locomotives", "to": "entity_59", "width": 1}, {"arrows": "to", "color": "gray", "from": "entity_44", "label": "RECOGNIZED", "title": "H\u1ed9i Ki\u1ebfn tr\u00fac s\u01b0 th\u1ebf gi\u1edbi (UIA) --RECOGNIZED--\u003e Tr\u01b0\u1eddng Cao \u0111\u1eb3ng S\u01b0 ph\u1ea1m\n---\nas: One of 1000 unique buildings of the 20th century", "to": "entity_40", "width": 1}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {"physics": {"enabled": true, "barnesHut": {"gravitationalConstant": -2000, "centralGravity": 0.3, "springLength": 95, "springConstant": 0.04, "damping": 0.3, "avoidOverlap": 0.1}, "maxVelocity": 50, "minVelocity": 0.1, "solver": "barnesHut"}, "interaction": {"hover": true, "navigationButtons": true, "zoomView": true, "dragView": true}, "nodes": {"font": {"size": 12}, "color": {"highlight": {"border": "rgba(255,255,255,1)", "background": "rgba(255,255,255,0.5)"}, "hover": {"border": "rgba(255,255,255,1)", "background": "rgba(255,255,255,0.5)"}}}, "edges": {"font": {"size": 10, "color": "white"}, "arrows": {"to": {"enabled": true, "scaleFactor": 0.5}}, "smooth": {"enabled": true, "type": "dynamic"}}, "groups": {"Person": {"color": "#90EE90"}, "Province": {"color": "#FFD700"}, "Organization": {"color": "#87CEEB"}, "Plateau": {"color": "#FFB6C1"}, "Mountain": {"color": "#DDA0DD"}, "Location": {"color": "#F0E68C"}, "City": {"color": "#98FB98"}}};
+
+                  
+
+
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+                    network.on("selectNode", neighbourhoodHighlight);
+                  
+
+                  
+
+
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    </body>
+</html>

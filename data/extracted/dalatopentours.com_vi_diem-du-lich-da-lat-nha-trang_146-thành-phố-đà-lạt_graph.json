@@ -1,0 +1,724 @@
+{
+  "nodes": [
+    {
+      "id": "entity_1",
+      "type": "City",
+      "properties": {
+        "name": "Đà Lạt",
+        "province": "Lâm Đồng",
+        "altitude": "1500 m",
+        "area": "393.29 km²"
+      }
+    },
+    {
+      "id": "entity_2",
+      "type": "Province",
+      "properties": {
+        "name": "Lâm Đồng"
+      }
+    },
+    {
+      "id": "entity_3",
+      "type": "Plateau",
+      "properties": {
+        "name": "Cao nguyên Lâm Viên"
+      }
+    },
+    {
+      "id": "entity_4",
+      "type": "Plateau",
+      "properties": {
+        "name": "Cao nguyên Lang Biang"
+      }
+    },
+    {
+      "id": "entity_5",
+      "type": "Mountain",
+      "properties": {
+        "name": "Chư Yang Kae",
+        "height": "1921 m"
+      }
+    },
+    {
+      "id": "entity_6",
+      "type": "Mountain",
+      "properties": {
+        "name": "Bi Doup",
+        "height": "2278 m"
+      }
+    },
+    {
+      "id": "entity_7",
+      "type": "Mountain",
+      "properties": {
+        "name": "Cho Proline",
+        "height": "1629 m"
+      }
+    },
+    {
+      "id": "entity_8",
+      "type": "Mountain",
+      "properties": {
+        "name": "Voi",
+        "height": "1754 m"
+      }
+    },
+    {
+      "id": "entity_9",
+      "type": "Mountain",
+      "properties": {
+        "name": "Yàng Sơreng"
+      }
+    },
+    {
+      "id": "entity_10",
+      "type": "Mountain",
+      "properties": {
+        "name": "Chư Yang Sinh",
+        "height": "1408 m"
+      }
+    },
+    {
+      "id": "entity_11",
+      "type": "Mountain",
+      "properties": {
+        "name": "Gió Hú",
+        "height": "1644 m"
+      }
+    },
+    {
+      "id": "entity_12",
+      "type": "Person",
+      "properties": {
+        "name": "Nguyễn Thông"
+      }
+    },
+    {
+      "id": "entity_13",
+      "type": "Person",
+      "properties": {
+        "name": "Paul Néis"
+      }
+    },
+    {
+      "id": "entity_14",
+      "type": "Person",
+      "properties": {
+        "name": "Albert Septans"
+      }
+    },
+    {
+      "id": "entity_15",
+      "type": "Person",
+      "properties": {
+        "name": "Alexandre Yersin"
+      }
+    },
+    {
+      "id": "entity_16",
+      "type": "Person",
+      "properties": {
+        "name": "Jean Marie Antoine de Lanessan"
+      }
+    },
+    {
+      "id": "entity_17",
+      "type": "Person",
+      "properties": {
+        "name": "Paul Doumer"
+      }
+    },
+    {
+      "id": "entity_18",
+      "type": "Person",
+      "properties": {
+        "name": "Duy Tân"
+      }
+    },
+    {
+      "id": "entity_19",
+      "type": "Person",
+      "properties": {
+        "name": "J.E. Charles"
+      }
+    },
+    {
+      "id": "entity_20",
+      "type": "Person",
+      "properties": {
+        "name": "Khải Định"
+      }
+    },
+    {
+      "id": "entity_21",
+      "type": "Person",
+      "properties": {
+        "name": "Bảo Đại"
+      }
+    },
+    {
+      "id": "entity_22",
+      "type": "Person",
+      "properties": {
+        "name": "Ngô Đình Diệm"
+      }
+    },
+    {
+      "id": "entity_23",
+      "type": "Person",
+      "properties": {
+        "name": "Nguyễn Cao Kỳ"
+      }
+    },
+    {
+      "id": "entity_24",
+      "type": "Person",
+      "properties": {
+        "name": "Nam Phương"
+      }
+    },
+    {
+      "id": "entity_25",
+      "type": "Person",
+      "properties": {
+        "name": "Nguyễn Hữu Hào"
+      }
+    },
+    {
+      "id": "entity_26",
+      "type": "Person",
+      "properties": {
+        "name": "Nguyễn Hữu Thị Lan"
+      }
+    },
+    {
+      "id": "entity_27",
+      "type": "Person",
+      "properties": {
+        "name": "Moncet"
+      }
+    },
+    {
+      "id": "entity_28",
+      "type": "Person",
+      "properties": {
+        "name": "Revenron"
+      }
+    },
+    {
+      "id": "entity_29",
+      "type": "Person",
+      "properties": {
+        "name": "Ngô Viết Thụ"
+      }
+    },
+    {
+      "id": "entity_30",
+      "type": "Person",
+      "properties": {
+        "name": "Cunhac"
+      }
+    },
+    {
+      "id": "entity_31",
+      "type": "Organization",
+      "properties": {
+        "name": "Viện Đại học Đà Lạt"
+      }
+    },
+    {
+      "id": "entity_32",
+      "type": "Organization",
+      "properties": {
+        "name": "Trường Võ bị Quốc gia Đà Lạt"
+      }
+    },
+    {
+      "id": "entity_33",
+      "type": "Organization",
+      "properties": {
+        "name": "Thư viện Đà Lạt"
+      }
+    },
+    {
+      "id": "entity_34",
+      "type": "Organization",
+      "properties": {
+        "name": "Trường Đại học Chiến tranh Chính trị"
+      }
+    },
+    {
+      "id": "entity_35",
+      "type": "Organization",
+      "properties": {
+        "name": "Trường Chỉ huy và Tham mưu"
+      }
+    },
+    {
+      "id": "entity_36",
+      "type": "Organization",
+      "properties": {
+        "name": "Viện Nghiên cứu hạt nhân"
+      }
+    },
+    {
+      "id": "entity_37",
+      "type": "Organization",
+      "properties": {
+        "name": "Phân viện Sinh học"
+      }
+    },
+    {
+      "id": "entity_38",
+      "type": "Organization",
+      "properties": {
+        "name": "Học viện Lục quân"
+      }
+    },
+    {
+      "id": "entity_39",
+      "type": "Organization",
+      "properties": {
+        "name": "Viện Vacxin (Pasteur)"
+      }
+    },
+    {
+      "id": "entity_40",
+      "type": "Organization",
+      "properties": {
+        "name": "Trường Cao đẳng Sư phạm"
+      }
+    },
+    {
+      "id": "entity_41",
+      "type": "Organization",
+      "properties": {
+        "name": "Công ty K'Gim"
+      }
+    },
+    {
+      "id": "entity_42",
+      "type": "Organization",
+      "properties": {
+        "name": "Công ty SIDEC"
+      }
+    },
+    {
+      "id": "entity_43",
+      "type": "Organization",
+      "properties": {
+        "name": "Bảo tàng Xe lửa Thụy Sĩ"
+      }
+    },
+    {
+      "id": "entity_44",
+      "type": "Organization",
+      "properties": {
+        "name": "Hội Kiến trúc sư thế giới (UIA)"
+      }
+    },
+    {
+      "id": "entity_45",
+      "type": "Location",
+      "properties": {
+        "name": "Hồ Xuân Hương"
+      }
+    },
+    {
+      "id": "entity_46",
+      "type": "Location",
+      "properties": {
+        "name": "Đồi Cù"
+      }
+    },
+    {
+      "id": "entity_47",
+      "type": "Location",
+      "properties": {
+        "name": "Hồ Suối Vàng"
+      }
+    },
+    {
+      "id": "entity_48",
+      "type": "Location",
+      "properties": {
+        "name": "Công viên hoa Đà Lạt"
+      }
+    },
+    {
+      "id": "entity_49",
+      "type": "Location",
+      "properties": {
+        "name": "Nhà thờ chánh tòa Đà Lạt"
+      }
+    },
+    {
+      "id": "entity_50",
+      "type": "Location",
+      "properties": {
+        "name": "Nhà thờ Domaine de Marie"
+      }
+    },
+    {
+      "id": "entity_51",
+      "type": "Location",
+      "properties": {
+        "name": "Nhà thờ Du Sinh"
+      }
+    },
+    {
+      "id": "entity_52",
+      "type": "Location",
+      "properties": {
+        "name": "Nhà thờ Cam Ly"
+      }
+    },
+    {
+      "id": "entity_53",
+      "type": "Location",
+      "properties": {
+        "name": "Dinh I"
+      }
+    },
+    {
+      "id": "entity_54",
+      "type": "Location",
+      "properties": {
+        "name": "Dinh II"
+      }
+    },
+    {
+      "id": "entity_55",
+      "type": "Location",
+      "properties": {
+        "name": "Dinh III"
+      }
+    },
+    {
+      "id": "entity_56",
+      "type": "Location",
+      "properties": {
+        "name": "Biệt thự Long Mỹ Quận Công"
+      }
+    },
+    {
+      "id": "entity_57",
+      "type": "Location",
+      "properties": {
+        "name": "Biệt thự Thống đốc Nam kỳ"
+      }
+    },
+    {
+      "id": "entity_58",
+      "type": "Location",
+      "properties": {
+        "name": "Biệt thự Hằng Nga"
+      }
+    },
+    {
+      "id": "entity_59",
+      "type": "Location",
+      "properties": {
+        "name": "Ga Đà Lạt"
+      }
+    },
+    {
+      "id": "entity_60",
+      "type": "Location",
+      "properties": {
+        "name": "Thiền viện Trúc Lâm"
+      }
+    },
+    {
+      "id": "entity_61",
+      "type": "Location",
+      "properties": {
+        "name": "Chùa Linh Sơn"
+      }
+    },
+    {
+      "id": "entity_62",
+      "type": "Location",
+      "properties": {
+        "name": "Chùa Thiên Vương Cổ Sát"
+      }
+    },
+    {
+      "id": "entity_63",
+      "type": "Location",
+      "properties": {
+        "name": "Chùa Linh Phước"
+      }
+    },
+    {
+      "id": "entity_64",
+      "type": "Location",
+      "properties": {
+        "name": "Chùa Linh Ẩn"
+      }
+    },
+    {
+      "id": "entity_65",
+      "type": "Location",
+      "properties": {
+        "name": "Hồ Tuyền Lâm"
+      }
+    }
+  ],
+  "edges": [
+    {
+      "source": "entity_1",
+      "target": "entity_2",
+      "type": "LOCATED_IN",
+      "properties": {},
+      "directed": true
+    },
+    {
+      "source": "entity_1",
+      "target": "entity_3",
+      "type": "LOCATED_ON",
+      "properties": {},
+      "directed": true
+    },
+    {
+      "source": "entity_1",
+      "target": "entity_4",
+      "type": "LOCATED_ON",
+      "properties": {},
+      "directed": true
+    },
+    {
+      "source": "entity_1",
+      "target": "entity_45",
+      "type": "HAS",
+      "properties": {},
+      "directed": true
+    },
+    {
+      "source": "entity_1",
+      "target": "entity_46",
+      "type": "HAS",
+      "properties": {},
+      "directed": true
+    },
+    {
+      "source": "entity_1",
+      "target": "entity_47",
+      "type": "HAS",
+      "properties": {},
+      "directed": true
+    },
+    {
+      "source": "entity_1",
+      "target": "entity_48",
+      "type": "HAS",
+      "properties": {},
+      "directed": true
+    },
+    {
+      "source": "entity_1",
+      "target": "entity_49",
+      "type": "HAS",
+      "properties": {},
+      "directed": true
+    },
+    {
+      "source": "entity_1",
+      "target": "entity_50",
+      "type": "HAS",
+      "properties": {},
+      "directed": true
+    },
+    {
+      "source": "entity_1",
+      "target": "entity_51",
+      "type": "HAS",
+      "properties": {},
+      "directed": true
+    },
+    {
+      "source": "entity_1",
+      "target": "entity_52",
+      "type": "HAS",
+      "properties": {},
+      "directed": true
+    },
+    {
+      "source": "entity_1",
+      "target": "entity_53",
+      "type": "HAS",
+      "properties": {},
+      "directed": true
+    },
+    {
+      "source": "entity_1",
+      "target": "entity_54",
+      "type": "HAS",
+      "properties": {},
+      "directed": true
+    },
+    {
+      "source": "entity_1",
+      "target": "entity_55",
+      "type": "HAS",
+      "properties": {},
+      "directed": true
+    },
+    {
+      "source": "entity_1",
+      "target": "entity_56",
+      "type": "HAS",
+      "properties": {},
+      "directed": true
+    },
+    {
+      "source": "entity_1",
+      "target": "entity_57",
+      "type": "HAS",
+      "properties": {},
+      "directed": true
+    },
+    {
+      "source": "entity_1",
+      "target": "entity_58",
+      "type": "HAS",
+      "properties": {},
+      "directed": true
+    },
+    {
+      "source": "entity_1",
+      "target": "entity_59",
+      "type": "HAS",
+      "properties": {},
+      "directed": true
+    },
+    {
+      "source": "entity_1",
+      "target": "entity_60",
+      "type": "HAS",
+      "properties": {},
+      "directed": true
+    },
+    {
+      "source": "entity_1",
+      "target": "entity_61",
+      "type": "HAS",
+      "properties": {},
+      "directed": true
+    },
+    {
+      "source": "entity_1",
+      "target": "entity_62",
+      "type": "HAS",
+      "properties": {},
+      "directed": true
+    },
+    {
+      "source": "entity_1",
+      "target": "entity_63",
+      "type": "HAS",
+      "properties": {},
+      "directed": true
+    },
+    {
+      "source": "entity_1",
+      "target": "entity_64",
+      "type": "HAS",
+      "properties": {},
+      "directed": true
+    },
+    {
+      "source": "entity_1",
+      "target": "entity_65",
+      "type": "HAS",
+      "properties": {},
+      "directed": true
+    },
+    {
+      "source": "entity_15",
+      "target": "entity_4",
+      "type": "DISCOVERED",
+      "properties": {
+        "date": "21 June 1893"
+      },
+      "directed": true
+    },
+    {
+      "source": "entity_17",
+      "target": "entity_15",
+      "type": "CONSULTED",
+      "properties": {
+        "purpose": "Establishing a resort"
+      },
+      "directed": true
+    },
+    {
+      "source": "entity_21",
+      "target": "entity_55",
+      "type": "RESIDED_AT",
+      "properties": {},
+      "directed": true
+    },
+    {
+      "source": "entity_21",
+      "target": "entity_24",
+      "type": "MARRIED_TO",
+      "properties": {},
+      "directed": true
+    },
+    {
+      "source": "entity_24",
+      "target": "entity_26",
+      "type": "DAUGHTER_OF",
+      "properties": {},
+      "directed": true
+    },
+    {
+      "source": "entity_26",
+      "target": "entity_25",
+      "type": "DAUGHTER_OF",
+      "properties": {},
+      "directed": true
+    },
+    {
+      "source": "entity_41",
+      "target": "entity_53",
+      "type": "INVESTED_IN",
+      "properties": {},
+      "directed": true
+    },
+    {
+      "source": "entity_42",
+      "target": "entity_59",
+      "type": "BUILT",
+      "properties": {},
+      "directed": true
+    },
+    {
+      "source": "entity_43",
+      "target": "entity_59",
+      "type": "PURCHASED",
+      "properties": {
+        "items": "2 steam locomotives"
+      },
+      "directed": true
+    },
+    {
+      "source": "entity_44",
+      "target": "entity_40",
+      "type": "RECOGNIZED",
+      "properties": {
+        "as": "One of 1000 unique buildings of the 20th century"
+      },
+      "directed": true
+    }
+  ],
+  "metadata": {
+    "extraction_timestamp": "2025-11-05T19:15:26.850330",
+    "model_name": "gpt-4o",
+    "source_text_length": 23489,
+    "context_provided": null,
+    "extractor_type": "URLExtractor",
+    "source_url": "https://dalatopentours.com/vi/diem-du-lich-da-lat-nha-trang/146-thành-phố-đà-lạt"
+  }
+}

@@ -1,0 +1,68 @@
+{
+  "nodes": [
+    {
+      "id": "entity_1",
+      "type": "Organization",
+      "properties": {
+        "name": "UBND Thành phố Đà Lạt",
+        "address": "Số 02, đường Trần Nhân Tông, phường 8, thành phố Đà Lạt, Lâm Đồng",
+        "phone": "0263 3822 386",
+        "email": "ubndtpdalat@lamdong.gov.vn"
+      }
+    },
+    {
+      "id": "entity_2",
+      "type": "Location",
+      "properties": {
+        "name": "Thành phố Đà Lạt",
+        "province": "Lâm Đồng"
+      }
+    },
+    {
+      "id": "entity_3",
+      "type": "Document",
+      "properties": {
+        "name": "QĐ 41/2021/QĐ-UBND",
+        "type": "Quy định kiến trúc xây dựng"
+      }
+    },
+    {
+      "id": "entity_4",
+      "type": "Organization",
+      "properties": {
+        "name": "Tập đoàn Bưu chính viễn thông Việt Nam"
+      }
+    }
+  ],
+  "edges": [
+    {
+      "source": "entity_1",
+      "target": "entity_2",
+      "type": "LOCATED_IN",
+      "properties": {},
+      "directed": true
+    },
+    {
+      "source": "entity_1",
+      "target": "entity_3",
+      "type": "ISSUED",
+      "properties": {},
+      "directed": true
+    },
+    {
+      "source": "entity_4",
+      "target": "entity_1",
+      "type": "DEVELOPED_BY",
+      "properties": {},
+      "directed": true
+    }
+  ],
+  "metadata": {
+    "extraction_timestamp": "2025-11-05T19:15:32.907325",
+    "model_name": "gpt-4o",
+    "source_text_length": 925,
+    "context_provided": null,
+    "extractor_type": "URLExtractor",
+    "source_url": "https://quyhoach.dalat.vn/PlanningInfo/GetDetailLand?file=74"
+  }
+}
